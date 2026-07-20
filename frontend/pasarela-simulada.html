@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Simulación académica de una pasarela de pagos externa"
+    />
+    <title>Pasarela simulada | Pago de reserva</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body class="gateway-body">
+    <header class="gateway-header">
+      <div>
+        <strong>Pasarela de pago simulada</strong>
+        <span>Entorno externo de demostración</span>
+      </div>
+      <span class="demo-badge">MODO PRUEBA</span>
+    </header>
+
+    <main class="gateway-main">
+      <section class="gateway-card" aria-labelledby="gateway-title">
+        <div class="gateway-notice" role="note">
+          <strong>Simulación académica</strong>
+          <span>No ingreses información bancaria real.</span>
+        </div>
+
+        <div class="gateway-heading">
+          <p>Centro Odontológico Kiru</p>
+          <h1 id="gateway-title">Pagar pedido PR-2026-00125</h1>
+          <div class="gateway-amount">
+            <span>Total</span>
+            <strong>S/ 100.00</strong>
+          </div>
+        </div>
+
+        <form class="gateway-form">
+          <fieldset class="gateway-method">
+            <legend>Método de pago simulado</legend>
+            <label>
+              <input type="radio" name="metodo" value="tarjeta" checked />
+              Tarjeta de prueba
+            </label>
+          </fieldset>
+
+          <label class="gateway-field" for="card-name">
+            <span>Nombre del titular</span>
+            <input
+              id="card-name"
+              name="titular"
+              type="text"
+              placeholder="DATOS DE PRUEBA"
+              autocomplete="off"
+            />
+          </label>
+
+          <label class="gateway-field" for="card-number">
+            <span>Número de tarjeta de prueba</span>
+            <input
+              id="card-number"
+              name="numero"
+              type="text"
+              inputmode="numeric"
+              placeholder="0000 0000 0000 0000"
+              autocomplete="off"
+            />
+          </label>
+
+          <div class="gateway-field-row">
+            <label class="gateway-field" for="card-expiration">
+              <span>Vencimiento</span>
+              <input
+                id="card-expiration"
+                name="vencimiento"
+                type="text"
+                placeholder="MM/AA"
+                autocomplete="off"
+              />
+            </label>
+            <label class="gateway-field" for="card-code">
+              <span>Código de prueba</span>
+              <input
+                id="card-code"
+                name="codigo"
+                type="text"
+                inputmode="numeric"
+                placeholder="000"
+                autocomplete="off"
+              />
+            </label>
+          </div>
+
+          <p class="gateway-disclaimer">
+            Esta maqueta no transmite, procesa ni almacena datos de pago.
+          </p>
+
+          <div class="gateway-actions">
+            <a class="gateway-cancel" href="registrar-pago.html">Cancelar</a>
+            <button class="gateway-submit" type="button">
+              Simular pago aprobado
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
