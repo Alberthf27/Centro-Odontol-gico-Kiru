@@ -1,0 +1,16 @@
+# Archivos temporales de revisión y herramientas
+tmp/
+
+# Borradores y documentación no aprobada: se incorporarán al repositorio cuando el equipo los valide.
+docs/
+
+# Variables de entorno y secretos locales
+.env
+.env.*
+!.env.example
+
+# Archivos del sistema y editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

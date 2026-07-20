@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Portal web del cliente del Centro Odontológico Kiru"
+    />
+    <title>Mis citas | Centro Odontológico Kiru</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-content">
+        <a class="brand" href="index.html" aria-label="Ir a Mis citas">
+          <span class="brand-mark" aria-hidden="true">K</span>
+          <span class="brand-copy">
+            <strong>Kiru</strong>
+            <small>Centro Odontológico</small>
+          </span>
+        </a>
+
+        <nav class="main-navigation" aria-label="Navegación del cliente">
+          <a class="nav-link active" href="index.html" aria-current="page">
+            Mis citas
+          </a>
+          <a class="nav-link" href="registrar-cita.html">Nueva cita</a>
+        </nav>
+
+        <div class="user-area" aria-label="Sesión del cliente">
+          <span class="user-avatar" aria-hidden="true">JP</span>
+          <span class="user-copy">
+            <strong>Juan Pérez</strong>
+            <small>Cliente</small>
+          </span>
+          <button class="logout-button" type="button">Cerrar sesión</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <section class="page-heading" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Portal del cliente</p>
+          <h1 id="page-title">Mis citas médicas</h1>
+          <p class="page-description">
+            Consulta las citas registradas y accede a las opciones disponibles.
+          </p>
+        </div>
+        <a class="primary-button button-link" href="registrar-cita.html">
+          Nueva cita
+        </a>
+      </section>
+
+      <section class="appointments-card" aria-labelledby="appointments-title">
+        <div class="card-header">
+          <div>
+            <h2 id="appointments-title">Citas registradas</h2>
+            <p>Selecciona una cita para consultar sus detalles.</p>
+          </div>
+
+          <form class="filters" aria-label="Filtros de citas">
+            <label class="field" for="appointment-status">
+              <span>Estado</span>
+              <select id="appointment-status" name="estado">
+                <option value="">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="atendida">Atendida</option>
+                <option value="cancelada">Cancelada</option>
+                <option value="reprogramada">Reprogramada</option>
+              </select>
+            </label>
+            <button class="secondary-button" type="button">Buscar</button>
+            <button class="ghost-button" type="reset">Limpiar</button>
+          </form>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <caption class="visually-hidden">
+              Citas médicas registradas por el cliente
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">ID cita</th>
+                <th scope="col">Fecha de realización</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Odontólogo</th>
+                <th scope="col" class="details-column">Detalles</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="selected-row" aria-selected="true">
+                <td data-label="ID cita"><strong>C-12316454</strong></td>
+                <td data-label="Fecha de realización">24/07/2026</td>
+                <td data-label="Hora">10:10</td>
+                <td data-label="Tipo">Consulta</td>
+                <td data-label="Estado">
+                  <span class="status status-pending">Pendiente</span>
+                </td>
+                <td data-label="Odontólogo">Dr. Deza Alfaro</td>
+                <td data-label="Detalles" class="details-column">
+                  <button class="detail-button" type="button">
+                    Ver detalle
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card-footer">
+          <p class="selection-message">
+            Cita seleccionada: <strong>C-12316454</strong>
+          </p>
+          <div class="appointment-actions">
+            <button class="secondary-button" type="button">Reprogramar</button>
+            <button class="danger-button" type="button">Cancelar cita</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Centro Odontológico Kiru</p>
+      <p>Portal web de reservas</p>
+    </footer>
+  </body>
+</html>

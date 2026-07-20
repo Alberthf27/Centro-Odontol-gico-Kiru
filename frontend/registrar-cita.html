@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Registro de citas médicas del Centro Odontológico Kiru"
+    />
+    <title>Registrar cita | Centro Odontológico Kiru</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-content">
+        <a class="brand" href="index.html" aria-label="Ir a Mis citas">
+          <span class="brand-mark" aria-hidden="true">K</span>
+          <span class="brand-copy">
+            <strong>Kiru</strong>
+            <small>Centro Odontológico</small>
+          </span>
+        </a>
+
+        <nav class="main-navigation" aria-label="Navegación del cliente">
+          <a class="nav-link" href="index.html">Mis citas</a>
+          <a
+            class="nav-link active"
+            href="registrar-cita.html"
+            aria-current="page"
+          >
+            Nueva cita
+          </a>
+        </nav>
+
+        <div class="user-area" aria-label="Sesión del cliente">
+          <span class="user-avatar" aria-hidden="true">JP</span>
+          <span class="user-copy">
+            <strong>Juan Pérez</strong>
+            <small>Cliente</small>
+          </span>
+          <button class="logout-button" type="button">Cerrar sesión</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content booking-page">
+      <a class="back-link" href="index.html">← Volver a mis citas</a>
+
+      <section class="page-heading booking-heading" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Reserva de citas</p>
+          <h1 id="page-title">Registrar cita médica</h1>
+          <p class="page-description">
+            Selecciona el tipo de cita, el odontólogo y una franja disponible.
+          </p>
+        </div>
+      </section>
+
+      <ol class="booking-steps" aria-label="Progreso de la reserva">
+        <li class="completed"><span>1</span><strong>Fecha</strong></li>
+        <li class="active"><span>2</span><strong>Cita</strong></li>
+        <li><span>3</span><strong>Horario</strong></li>
+        <li><span>4</span><strong>Pedido</strong></li>
+      </ol>
+
+      <form class="booking-card">
+        <div class="booking-fields">
+          <section class="booking-section" aria-labelledby="date-title">
+            <div class="section-number" aria-hidden="true">1</div>
+            <div class="section-content">
+              <h2 id="date-title">Fecha y tipo de cita</h2>
+              <label class="field full-field" for="appointment-date">
+                <span>Fecha</span>
+                <input
+                  id="appointment-date"
+                  name="fecha"
+                  type="date"
+                  value="2026-07-24"
+                />
+              </label>
+
+              <fieldset class="appointment-type">
+                <legend>Tipo de cita</legend>
+                <label>
+                  <input type="radio" name="tipo" value="consulta" checked />
+                  Consulta
+                </label>
+                <label>
+                  <input type="radio" name="tipo" value="tratamiento" />
+                  Tratamiento
+                </label>
+              </fieldset>
+            </div>
+          </section>
+
+          <section class="booking-section" aria-labelledby="service-title">
+            <div class="section-number" aria-hidden="true">2</div>
+            <div class="section-content">
+              <h2 id="service-title">Tratamiento y odontólogo</h2>
+              <label class="field full-field" for="treatment">
+                <span>Tratamiento</span>
+                <select id="treatment" name="tratamiento">
+                  <option>Limpieza dental</option>
+                </select>
+              </label>
+              <label class="field full-field" for="dentist">
+                <span>Odontólogo</span>
+                <select id="dentist" name="odontologo">
+                  <option>Dr. Deza Alfaro</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <section class="booking-section order-section" aria-labelledby="order-title">
+            <div class="section-number" aria-hidden="true">3</div>
+            <div class="section-content">
+              <h2 id="order-title">Pedido de reserva</h2>
+              <div class="order-empty">
+                <strong>Aún no has añadido citas</strong>
+                <span>Elige una franja disponible y agrégala al pedido.</span>
+              </div>
+              <div class="order-total">
+                <span>Monto total</span>
+                <strong>S/ 0.00</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section class="schedule-section" aria-labelledby="schedule-title">
+          <div class="schedule-header">
+            <div>
+              <p class="section-kicker">Semana del 20 al 26 de julio</p>
+              <h2 id="schedule-title">Franjas horarias</h2>
+            </div>
+            <div class="schedule-legend" aria-label="Estados de las franjas">
+              <span><i class="legend-dot available-dot"></i>Disponible</span>
+              <span><i class="legend-dot occupied-dot"></i>Ocupada</span>
+            </div>
+          </div>
+
+          <div class="schedule-container">
+            <table class="schedule-table">
+              <caption class="visually-hidden">
+                Disponibilidad semanal del odontólogo seleccionado
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Hora</th>
+                  <th scope="col">Lunes 20</th>
+                  <th scope="col">Martes 21</th>
+                  <th scope="col">Miércoles 22</th>
+                  <th scope="col">Jueves 23</th>
+                  <th scope="col">Viernes 24</th>
+                  <th scope="col">Sábado 25</th>
+                  <th scope="col">Domingo 26</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">08:00 - 09:00</th>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot occupied">Ocupada</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot occupied">Ocupada</span></td>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">09:00 - 10:00</th>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                  <td><span class="slot occupied">Ocupada</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot occupied">Ocupada</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">10:00 - 11:00</th>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot occupied">Ocupada</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">11:00 - 12:00</th>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot occupied">Ocupada</span></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><button class="slot available" type="button">Disponible</button></td>
+                  <td><span class="slot occupied">Ocupada</span></td>
+                  <td><span class="slot unavailable">No disponible</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="booking-actions">
+          <a class="ghost-button button-link" href="index.html">Cancelar</a>
+          <div class="booking-primary-actions">
+            <button class="secondary-button" type="button">Añadir al pedido</button>
+            <button class="primary-button" type="button">Siguiente</button>
+          </div>
+        </div>
+      </form>
+    </main>
+
+    <footer class="site-footer">
+      <p>Centro Odontológico Kiru</p>
+      <p>Portal web de reservas</p>
+    </footer>
+  </body>
+</html>

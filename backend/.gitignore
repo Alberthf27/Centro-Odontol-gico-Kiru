@@ -1,0 +1,16 @@
+# Compilacion Maven
+target/
+
+# Variables locales y secretos
+.env
+.env.*
+!.env.example
+
+# Configuracion de herramientas
+.idea/
+.vscode/
+*.iml
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
