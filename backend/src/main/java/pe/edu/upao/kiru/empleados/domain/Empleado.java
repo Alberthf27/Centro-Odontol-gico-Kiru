@@ -3,23 +3,24 @@ package pe.edu.upao.kiru.empleados.domain;
 public class Empleado {
 
     private String idEmpleado;
-    private String nombres;
-    private String apellidos;
+    private String nombre;
+    private String apellido;
     private String dni;
     private String celular;
     private String cargo;
-    private boolean activo;
+    private String estado;
+    private String direccion;
 
     public String getIdEmpleado() {
         return idEmpleado;
     }
 
-    public String getNombres() {
-        return nombres;
+    public String getNombre() {
+        return nombre;
     }
 
-    public String getApellidos() {
-        return apellidos;
+    public String getApellido() {
+        return apellido;
     }
 
     public String getDni() {
@@ -34,7 +35,11 @@ public class Empleado {
         return cargo;
     }
 
-    public boolean isActivo() {
-        return activo;
+    public String getEstado() {
+        return estado;
+    }
+
+    public String getDireccion() {
+        return direccion;
     }
 }

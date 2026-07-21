@@ -2,19 +2,51 @@ package pe.edu.upao.kiru.pagos.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import pe.edu.upao.kiru.clientes.domain.Cliente;
-import pe.edu.upao.kiru.empleados.domain.Empleado;
+import java.util.Objects;
 
 public class Comprobante {
 
     private String idComprobante;
     private String nroComprobante;
-    private LocalDateTime fecha;
+    private LocalDateTime fechaEmision;
     private BigDecimal montoTotal;
-    private String tipoPago;
-    private String estado;
-    private Cliente cliente;
-    private Empleado empleado;
+    private TipoComprobante tipoComprobante;
+    private Pago pago;
+
+    protected Comprobante() {
+    }
+
+    public Comprobante(
+            String nroComprobante,
+            TipoComprobante tipoComprobante,
+            BigDecimal montoTotal,
+            LocalDateTime fechaEmision,
+            Pago pago
+    ) {
+        this.nroComprobante = Objects.requireNonNull(nroComprobante);
+        this.tipoComprobante = Objects.requireNonNull(tipoComprobante);
+        this.montoTotal = Objects.requireNonNull(montoTotal);
+        this.fechaEmision = Objects.requireNonNull(fechaEmision);
+        this.pago = Objects.requireNonNull(pago);
+    }
+
+    public static Comprobante reconstituir(
+            String idComprobante,
+            String nroComprobante,
+            TipoComprobante tipoComprobante,
+            BigDecimal montoTotal,
+            LocalDateTime fechaEmision,
+            Pago pago
+    ) {
+        Comprobante comprobante = new Comprobante();
+        comprobante.idComprobante = idComprobante;
+        comprobante.nroComprobante = nroComprobante;
+        comprobante.tipoComprobante = tipoComprobante;
+        comprobante.montoTotal = montoTotal;
+        comprobante.fechaEmision = fechaEmision;
+        comprobante.pago = pago;
+        return comprobante;
+    }
 
     public String getIdComprobante() {
         return idComprobante;
@@ -24,27 +56,19 @@ public class Comprobante {
         return nroComprobante;
     }
 
-    public LocalDateTime getFecha() {
-        return fecha;
+    public LocalDateTime getFechaEmision() {
+        return fechaEmision;
     }
 
     public BigDecimal getMontoTotal() {
         return montoTotal;
     }
 
-    public String getTipoPago() {
-        return tipoPago;
+    public TipoComprobante getTipoComprobante() {
+        return tipoComprobante;
     }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public Empleado getEmpleado() {
-        return empleado;
+    public Pago getPago() {
+        return pago;
     }
 }

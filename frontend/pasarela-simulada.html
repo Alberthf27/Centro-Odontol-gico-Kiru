@@ -9,6 +9,8 @@
     />
     <title>Pasarela simulada | Pago de reserva</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <script src="cliente/js/api.js" defer></script>
+    <script src="js/reservas-ui.js" defer></script>
   </head>
   <body class="gateway-body">
     <header class="gateway-header">
@@ -28,80 +30,27 @@
 
         <div class="gateway-heading">
           <p>Centro Odontológico Kiru</p>
-          <h1 id="gateway-title">Pagar pedido PR-2026-00125</h1>
+          <h1 id="gateway-title">Pagar pedido —</h1>
           <div class="gateway-amount">
             <span>Total</span>
-            <strong>S/ 100.00</strong>
+            <strong id="gateway-total">S/ 0.00</strong>
           </div>
         </div>
 
-        <form class="gateway-form">
-          <fieldset class="gateway-method">
-            <legend>Método de pago simulado</legend>
-            <label>
-              <input type="radio" name="metodo" value="tarjeta" checked />
-              Tarjeta de prueba
-            </label>
-          </fieldset>
-
-          <label class="gateway-field" for="card-name">
-            <span>Nombre del titular</span>
-            <input
-              id="card-name"
-              name="titular"
-              type="text"
-              placeholder="DATOS DE PRUEBA"
-              autocomplete="off"
-            />
-          </label>
-
-          <label class="gateway-field" for="card-number">
-            <span>Número de tarjeta de prueba</span>
-            <input
-              id="card-number"
-              name="numero"
-              type="text"
-              inputmode="numeric"
-              placeholder="0000 0000 0000 0000"
-              autocomplete="off"
-            />
-          </label>
-
-          <div class="gateway-field-row">
-            <label class="gateway-field" for="card-expiration">
-              <span>Vencimiento</span>
-              <input
-                id="card-expiration"
-                name="vencimiento"
-                type="text"
-                placeholder="MM/AA"
-                autocomplete="off"
-              />
-            </label>
-            <label class="gateway-field" for="card-code">
-              <span>Código de prueba</span>
-              <input
-                id="card-code"
-                name="codigo"
-                type="text"
-                inputmode="numeric"
-                placeholder="000"
-                autocomplete="off"
-              />
-            </label>
-          </div>
-
+        <div class="gateway-form">
           <p class="gateway-disclaimer">
-            Esta maqueta no transmite, procesa ni almacena datos de pago.
+            Esta simulación representa una pasarela externa: no solicita,
+            transmite ni almacena información bancaria.
           </p>
 
           <div class="gateway-actions">
-            <a class="gateway-cancel" href="registrar-pago.html">Cancelar</a>
-            <button class="gateway-submit" type="button">
+            <p class="gateway-message" id="gateway-message" role="status" aria-live="polite" hidden></p>
+            <a class="gateway-cancel" href="cliente/mis-citas.html">Cancelar</a>
+            <button class="gateway-submit" id="approve-payment" type="button">
               Simular pago aprobado
             </button>
           </div>
-        </form>
+        </div>
       </section>
     </main>
   </body>

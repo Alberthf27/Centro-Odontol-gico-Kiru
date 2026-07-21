@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "optional:file:./.env[.properties]"
   application:
     name: kiru-backend
   datasource:
@@ -12,6 +14,8 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
   security:
     oauth2:
       resourceserver:
@@ -24,6 +28,11 @@ server:
 app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
+  reservas:
+    precio-consulta: ${PRECIO_CONSULTA:50.00}
+  demo:
+    enabled: ${KIRU_DEMO_ENABLED:false}
+    auth-user-id: ${KIRU_DEMO_AUTH_USER_ID:00000000-0000-0000-0000-000000000001}
 
 springdoc:
   swagger-ui:

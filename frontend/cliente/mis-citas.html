@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis citas · KIRU</title>
+    <meta name="description" content="Revisa, filtra, cancela o reprograma tus citas en KIRU.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/agendar-cita.css">
+    <link rel="stylesheet" href="css/mis-citas.css">
+    <script src="js/api.js" defer></script>
+    <script src="js/mis-citas.js" defer></script>
+</head>
+<body class="dash-body">
+    <div class="dash-shell">
+
+        <!-- Interfaz base entregada por el equipo de frontend, acotada al módulo de reservas. -->
+        <aside class="dash-sidebar">
+            <a href="mis-citas.html" class="logo logo--on-dark">
+                <span class="logo-mark" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" width="22" height="22" fill="none">
+                        <path d="M16 4c-3.6 0-6.4 1.7-8.4 1.7-1.7 0-2.6-.9-2.6-.9S4 6.7 4 10.4c0 4.6 1.6 9 2.9 12.6.9 2.5 1.7 4.6 3.2 4.6 1.9 0 2-4.3 2.9-7.4.4-1.4 1-2.5 2-2.5s1.6 1.1 2 2.5c.9 3.1 1 7.4 2.9 7.4 1.5 0 2.3-2.1 3.2-4.6C24.4 19.4 26 15 26 10.4c0-3.7-1-4.6-1-4.6s-.9.9-2.6.9C20.4 5.7 19.6 4 16 4z" fill="currentColor"/>
+                    </svg>
+                </span>
+                <span class="logo-text">KIRU</span>
+            </a>
+
+            <nav class="dash-nav" aria-label="Navegación principal">
+                <a href="agendar-cita.html" class="dash-nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3.5v3M16 3.5v3"/></svg>
+                    <span>Registrar cita médica</span>
+                </a>
+                <a href="mis-citas.html" class="dash-nav-item is-active">
+                    <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4h9l3 3v13a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1z"/><path d="M9 10h6M9 13.5h6M9 17h3.5"/></svg>
+                    <span>Mis citas</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- CONTENIDO -->
+        <div class="dash-main-wrap">
+
+            <header class="dash-topbar">
+                <div>
+                    <h1 class="dash-title">Mis citas médicas</h1>
+                </div>
+                <div class="dash-topbar-actions">
+                    <a href="agendar-cita.html" class="btn-primary">Registrar cita médica</a>
+                </div>
+            </header>
+
+            <div class="citas-wrap">
+
+                <!-- Estructura y opciones previstas en el wireframe de listar citas. -->
+                <div class="filter-bar citas-filter-bar">
+                    <div class="filter-dates">
+                        <label class="filter-label">Estado
+                            <select id="statusFilter">
+                                <option value="">Seleccionar</option>
+                                <option value="PENDIENTE">Pendiente</option>
+                                <option value="EN_ATENCION">En atención</option>
+                                <option value="ATENDIDA">Atendida</option>
+                                <option value="CANCELADA">Cancelada</option>
+                                <option value="REPROGRAMADA">Reprogramada</option>
+                            </select>
+                        </label>
+                        <button type="button" class="btn-primary btn-ghost--sm" id="searchCitas">Buscar</button>
+                        <button type="button" class="btn-ghost btn-ghost--sm" id="clearFilters">Limpiar</button>
+                    </div>
+                </div>
+
+                <div class="citas-table-wrap">
+                    <table class="citas-table">
+                        <thead>
+                            <tr>
+                                <th>ID cita</th>
+                                <th>Fecha de realización</th>
+                                <th>Hora</th>
+                                <th>Tipo</th>
+                                <th>Estado</th>
+                                <th>Odontólogo</th>
+                                <th>Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody id="citasList"></tbody>
+                    </table>
+                </div>
+                <p class="empty-citas" id="emptyCitas" hidden>No se encontraron citas con estos filtros.</p>
+                <div class="citas-actions">
+                    <button type="button" class="btn-primary" id="rescheduleSelected" disabled>Reprogramar</button>
+                    <button type="button" class="btn-ghost btn-danger" id="cancelSelected" disabled>Cancelar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de cancelar o reprogramar una cita. -->
+    <div class="modal-overlay" id="modalOverlay" hidden>
+        <div class="modal-box" id="modalBox" role="dialog" aria-modal="true"></div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
