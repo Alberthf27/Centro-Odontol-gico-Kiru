@@ -279,7 +279,7 @@ function renderAvailabilityRows(weekDays, responses) {
             horaFin,
             responses[index]
         )).join('');
-        return `<tr><td>${horaInicio} - ${horaFin}</td>${cells}</tr>`;
+        return `<tr><td>${formatTimeDisplay(horaInicio)} - ${formatTimeDisplay(horaFin)}</td>${cells}</tr>`;
     }).join('');
     bindAvailabilityEvents();
 }
@@ -297,7 +297,7 @@ function renderAvailabilityCell(day, horaInicio, horaFin, franjas) {
     if (!franja.disponible) return `<td class="slot-cell${selectedDay}"><span class="slot-cell-busy">Ocupado</span></td>`;
 
     const selected = state.selectedFranja?.idFranja === franja.idFranja ? ' is-selected' : '';
-    return `<td class="slot-cell${selectedDay}"><button type="button" class="slot-subtime${selected}" data-franja='${escapeHtml(JSON.stringify(franja))}'>Disponible<br><small>${horaInicio}</small></button></td>`;
+    return `<td class="slot-cell${selectedDay}"><button type="button" class="slot-subtime${selected}" data-franja='${escapeHtml(JSON.stringify(franja))}'>Disponible<br><small>${formatTimeDisplay(horaInicio)}</small></button></td>`;
 }
 
 function bindAvailabilityEvents() {
@@ -444,7 +444,7 @@ function renderScheduleSummary() {
             ? `${treatment.nombre}${session ? ` · ${session.nombreTipo}` : ''}`
             : state.type ? 'Tratamiento' : '—');
     setText('summaryDate', state.selectedFranja ? formatDisplayDate(state.selectedFranja.fecha) : formatDisplayDate(state.date));
-    setText('summaryTime', state.selectedFranja ? `${timeShort(state.selectedFranja.horaInicio)} - ${timeShort(state.selectedFranja.horaFin)}` : 'Elige una franja');
+    setText('summaryTime', state.selectedFranja ? `${formatTimeDisplay(state.selectedFranja.horaInicio)} - ${formatTimeDisplay(state.selectedFranja.horaFin)}` : 'Elige una franja');
     const amount = state.type === 'consulta'
         ? state.consultationPrice
         : treatment ? Number(treatment.precio) : 0;
@@ -531,6 +531,11 @@ function todayInClinic() {
     return new Date(Number(values.year), Number(values.month) - 1, Number(values.day));
 }
 function timeShort(time) { return String(time || '').slice(0, 5); }
+function formatTimeDisplay(time) {
+    const [hour = 0, minute = 0] = timeShort(time).split(':').map(Number);
+    const period = hour >= 12 ? 'PM' : 'AM';
+    return `${hour % 12 || 12}:${String(minute).padStart(2, '0')} ${period}`;
+}
 function toLocalDate(date) {
     return new Date(`${String(date).slice(0, 10)}T00:00:00`);
 }

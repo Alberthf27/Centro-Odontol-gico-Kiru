@@ -181,10 +181,7 @@ public class DemoDataInitializer implements ApplicationRunner {
                 insert into public.franja_horaria (
                     id_franja, id_odontologo, fecha, hora_inicio, hora_fin, disponible
                 ) values (?, ?, ?, ?, ?, true)
-                on conflict (id_odontologo, fecha, hora_inicio) do update
-                set hora_fin = excluded.hora_fin,
-                    disponible = true
-                where franja_horaria.id_cita is null
+                on conflict do nothing
                 """, id, odontologo, fecha, inicio, inicio.plusHours(1));
     }
 

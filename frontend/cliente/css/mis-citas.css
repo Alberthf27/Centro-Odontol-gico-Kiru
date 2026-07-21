@@ -33,6 +33,21 @@
     width: auto;
 }
 
+.citas-actions .btn-primary,
+.citas-actions .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 22px;
+    border-radius: 8px;
+    font: 600 13px 'Inter', sans-serif;
+}
+
+.citas-actions .btn-danger {
+    background: #fff;
+}
+
 .filter-label { display: grid; gap: 5px; }
 
 .filter-label select {

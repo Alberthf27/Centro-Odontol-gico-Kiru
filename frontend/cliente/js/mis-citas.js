@@ -69,9 +69,9 @@ function renderRow(appointment) {
         : 'Consulta';
     return `
         <tr data-id="${escapeHtml(appointment.nroCita)}" class="${selected ? 'is-selected' : ''}">
-            <td class="cita-id">${escapeHtml(appointment.nroCita)}</td>
+            <td class="cita-id" title="${escapeHtml(appointment.nroCita)}">${escapeHtml(codigoVisibleCita(appointment.nroCita))}</td>
             <td>${formatTableDate(appointment.fecha)}</td>
-            <td>${escapeHtml(timeShort(appointment.horaInicio))}</td>
+            <td>${escapeHtml(formatTimeDisplay(appointment.horaInicio))}</td>
             <td>${escapeHtml(tipo)}</td>
             <td><span class="status-pill status-${statusCss(appointment.estado)}">${statusLabel(appointment.estado)}</span></td>
             <td>${escapeHtml(appointment.nombreOdontologo || `Odontólogo ${appointment.idOdontologo}`)}</td>
@@ -97,13 +97,13 @@ function updateSelectedActions() {
 
 function openCancelModal(appointment) {
     if (!tieneAnticipacionMinima(appointment)) {
-        openModal('No se puede cancelar', 'La cancelación exige al menos 24 horas de anticipación.', '<button type="button" class="btn-primary" id="modalClose">Entendido</button>');
+        openModal('No se puede cancelar', 'La cita está a menos de 24 horas. No se enviará la cancelación.', '<button type="button" class="btn-primary" id="modalClose">Entendido</button>');
         document.getElementById('modalClose').addEventListener('click', closeModal);
         return;
     }
     openModal(
         'Cancelar cita',
-        `${formatTableDate(appointment.fecha)} · ${timeShort(appointment.horaInicio)} · ${appointment.tratamiento || 'Consulta'}${appointment.sesion ? ` · ${appointment.sesion}` : ''}. La franja volverá a estar disponible.`,
+        `${formatTableDate(appointment.fecha)} · ${formatTimeDisplay(appointment.horaInicio)} · ${appointment.tratamiento || 'Consulta'}${appointment.sesion ? ` · ${appointment.sesion}` : ''}. La franja volverá a estar disponible.`,
         '<button type="button" class="btn-ghost" id="modalClose">Volver</button><button type="button" class="btn-primary btn-danger" id="confirmCancel">Confirmar cancelación</button>'
     );
     document.getElementById('modalClose').addEventListener('click', closeModal);
@@ -147,7 +147,7 @@ function openRescheduleModal(appointment) {
             const franjas = await KIRU_API.disponibilidades(appointment.idOdontologo, date.value);
             const disponibles = franjas.filter((franja) => franja.disponible);
             slots.innerHTML = disponibles.length
-                ? disponibles.map((franja) => `<button type="button" class="slot-btn" data-franja="${escapeHtml(franja.idFranja)}">${timeShort(franja.horaInicio)} - ${timeShort(franja.horaFin)}</button>`).join('')
+                ? disponibles.map((franja) => `<button type="button" class="slot-btn" data-franja="${escapeHtml(franja.idFranja)}">${formatTimeDisplay(franja.horaInicio)} - ${formatTimeDisplay(franja.horaFin)}</button>`).join('')
                 : '<p class="empty-slots">No hay franjas disponibles ese día.</p>';
             slots.querySelectorAll('[data-franja]').forEach((button) => button.addEventListener('click', () => {
                 slots.querySelectorAll('[data-franja]').forEach((item) => item.classList.remove('is-selected'));
@@ -242,4 +242,14 @@ function tomorrowIso() {
 }
 
 function timeShort(time) { return String(time || '').slice(0, 5); }
+function formatTimeDisplay(time) {
+    const [hour = 0, minute = 0] = timeShort(time).split(':').map(Number);
+    const period = hour >= 12 ? 'PM' : 'AM';
+    return `${hour % 12 || 12}:${String(minute).padStart(2, '0')} ${period}`;
+}
+function codigoVisibleCita(nroCita) {
+    const code = String(nroCita || '');
+    if (code.startsWith('CITA-')) return code;
+    return `CITA-${code.replace(/-/g, '').slice(-12).toUpperCase()}`;
+}
 function escapeHtml(value) { return String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char])); }

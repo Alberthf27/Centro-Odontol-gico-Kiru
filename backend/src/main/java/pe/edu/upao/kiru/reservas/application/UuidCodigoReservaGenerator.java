@@ -9,11 +9,18 @@ public class UuidCodigoReservaGenerator implements CodigoReservaGenerator {
 
     @Override
     public String siguientePedido() {
-        return UUID.randomUUID().toString();
+        return siguienteCodigo("PED");
     }
 
     @Override
     public String siguienteCita() {
-        return UUID.randomUUID().toString();
+        return siguienteCodigo("CITA");
+    }
+
+    private String siguienteCodigo(String prefijo) {
+        return prefijo + "-" + UUID.randomUUID().toString()
+                .replace("-", "")
+                .substring(0, 12)
+                .toUpperCase();
     }
 }
