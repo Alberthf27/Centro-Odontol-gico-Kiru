@@ -1,0 +1,100 @@
+/** Flujo dedicado de reprogramación, basado en la interfaz de la página 75 del informe. */
+.reprogram-page .dash-main-wrap { max-width: none; min-width: 0; }
+.reprogram-wrap {
+    --booking-accent: #2f9e78;
+    --booking-accent-soft: #e6f4ee;
+    --booking-ink: #1f2a24;
+    --booking-muted: #6b7670;
+    --booking-border: #e2e6e2;
+    --booking-busy: #c94a3f;
+    --booking-free: #2f9e78;
+    width: 100%;
+    max-width: 1180px;
+}
+
+.reprogram-card { min-width: 0; padding: 20px; border-radius: 4px; }
+.reprogram-top {
+    display: grid;
+    grid-template-columns: 210px minmax(280px, 1fr) minmax(260px, 320px);
+    gap: 20px;
+    align-items: start;
+}
+
+.reprogram-left-column { display: grid; gap: 12px; align-content: start; }
+.reprogram-left-column .reprogram-cancel { justify-self: start; }
+
+.current-appointment-panel,
+.new-selection-panel {
+    min-height: 100%;
+    padding: 18px;
+    border: 1px solid var(--booking-border);
+    border-radius: 4px;
+    background: #fff;
+}
+
+.appointment-data-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+.appointment-data-grid div,
+.new-selection-summary div { min-width: 0; }
+.appointment-data-grid span,
+.new-selection-summary span {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--booking-muted);
+    font: 600 9.5px 'Inter', sans-serif;
+    text-transform: uppercase;
+}
+.appointment-data-grid strong,
+.new-selection-summary strong {
+    display: block;
+    overflow: hidden;
+    color: var(--booking-ink);
+    font: 600 11.5px 'Inter', sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.reprogram-note {
+    margin: 14px 0 0;
+    padding: 9px 10px;
+    border: 1px solid #f0dfb5;
+    border-radius: 4px;
+    color: #8a5d16;
+    background: #fff8e8;
+    font: 400 11px 'Inter', sans-serif;
+    line-height: 1.4;
+}
+.reprogram-note.is-error { border-color: #f0caca; color: #a52d2d; background: #fff4f4; }
+
+.new-selection-summary { display: grid; gap: 10px; margin-top: 14px; padding: 10px; border: 1px solid var(--booking-border); border-radius: 4px; }
+.new-selection-summary div { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding-bottom: 6px; border-bottom: 1px solid var(--booking-border); }
+.new-selection-summary div:last-child { padding-bottom: 0; border-bottom: 0; }
+.new-selection-summary span { margin: 0; }
+.new-selection-summary strong { text-align: right; }
+
+.reprogram-cancel { width: auto; min-height: 34px; padding: 0 18px; color: #b23a3a; border-color: #f0caca; border-radius: 4px; }
+.reprogram-cancel:hover { border-color: #b23a3a; background: #fbe9e9; }
+.reprogram-confirm { display: block; width: auto; min-height: 36px; margin: 12px 0 0 auto; padding: 0 16px; border-radius: 4px; }
+.reprogram-confirm:disabled { cursor: not-allowed; opacity: .45; }
+
+.reprogram-availability { margin-top: 22px; }
+.slot-subtime.is-current { border-style: dashed; color: var(--booking-muted); background: #f8faf9; }
+.availability-empty { height: auto !important; padding: 18px !important; color: var(--booking-muted); font-family: 'Inter', sans-serif !important; font-size: 12px; text-align: center !important; }
+
+.reprogram-feedback { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--booking-border); border-radius: 4px; color: var(--booking-muted); background: #f8faf9; font: 500 13px 'Inter', sans-serif; }
+.reprogram-feedback--error { border-color: #f0caca; color: #a52d2d; background: #fff4f4; }
+.reprogram-feedback[hidden] { display: none; }
+.reprogram-loading { padding: 60px 20px; color: var(--booking-muted); font: 400 14px 'Inter', sans-serif; text-align: center; }
+.reprogram-loading[hidden] { display: none; }
+
+@media (max-width: 980px) {
+    .reprogram-top { grid-template-columns: 200px minmax(250px, 1fr); }
+    .new-selection-panel { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+    .reprogram-card { padding: 16px; }
+    .reprogram-top { grid-template-columns: 1fr; }
+    .reprogram-left-column { grid-column: auto; }
+    .new-selection-panel { grid-column: auto; }
+    .appointment-data-grid { grid-template-columns: 1fr 1fr; }
+    .reprogram-confirm { margin-left: 0; }
+}

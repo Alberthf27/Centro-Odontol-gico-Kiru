@@ -61,7 +61,29 @@
     background: #fff;
 }
 
+.filter-label input {
+    width: 190px;
+    height: 36px;
+    box-sizing: border-box;
+    padding: 0 10px;
+    border: 1px solid var(--c-border);
+    border-radius: 4px;
+    color: var(--c-ink);
+    background: #fff;
+    font: 400 12.5px 'Inter', sans-serif;
+}
+
+.filter-label input:focus,
+.filter-label select:focus { outline: 2px solid rgba(47, 158, 120, .22); border-color: var(--c-accent); }
+
 .btn-ghost--sm { padding: 8px 18px; font-size: 12.5px; }
+
+@media (max-width: 760px) {
+    .citas-filter-bar { justify-content: stretch; }
+    .filter-dates { width: 100%; flex-wrap: wrap; justify-content: flex-start; }
+    .filter-label--search { flex: 1 1 190px; }
+    .filter-label input { width: 100%; }
+}
 
 .citas-table-wrap {
     overflow-x: auto;

@@ -9,10 +9,11 @@
     />
     <title>Pasarela simulada | Pago de reserva</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <script src="cliente/js/auth.js?v=2" defer></script>
     <script src="cliente/js/api.js" defer></script>
     <script src="js/reservas-ui.js" defer></script>
   </head>
-  <body class="gateway-body">
+  <body class="gateway-body" data-requires-role="CLIENTE">
     <header class="gateway-header">
       <div>
         <strong>Pasarela de pago simulada</strong>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión · KIRU</title>
+    <meta name="description" content="Acceso al módulo de reservas de KIRU.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css?v=1">
+    <script src="cliente/js/auth.js?v=2" defer></script>
+</head>
+<body class="login-body">
+    <main class="login-shell">
+        <section class="login-card" aria-labelledby="loginTitle">
+            <div class="login-brand"><span class="login-mark">✦</span><span>KIRU</span></div>
+            <p class="login-kicker">Módulo de reservas</p>
+            <h1 id="loginTitle">Iniciar sesión</h1>
+            <p class="login-intro">Accede con tu cuenta para gestionar las citas según tu rol.</p>
+
+            <form id="loginForm" class="login-form">
+                <label>Correo electrónico
+                    <input type="email" id="loginEmail" autocomplete="email" required>
+                </label>
+                <label>Contraseña
+                    <input type="password" id="loginPassword" autocomplete="current-password" required>
+                </label>
+                <button type="submit" class="btn-primary login-submit" id="loginSubmit">Ingresar</button>
+                <p class="login-feedback" id="loginFeedback" role="alert" hidden></p>
+            </form>
+
+            <div class="login-divider"><span>o</span></div>
+            <button type="button" class="btn-ghost login-demo" id="demoLogin">Continuar en modo demostración</button>
+            <p class="login-note">El rol se asigna en Supabase Auth. No se elige desde la pantalla.</p>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            const submit = document.getElementById('loginSubmit');
+            const feedback = document.getElementById('loginFeedback');
+            const showError = (message) => { feedback.textContent = message; feedback.hidden = false; };
+
+            const existing = window.KIRU_AUTH.currentSession();
+            if (existing) window.KIRU_AUTH.redirectAfterLogin(existing);
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                feedback.hidden = true;
+                submit.disabled = true;
+                submit.textContent = 'Ingresando…';
+                try {
+                    const session = await window.KIRU_AUTH.signIn(
+                        document.getElementById('loginEmail').value.trim(),
+                        document.getElementById('loginPassword').value
+                    );
+                    window.KIRU_AUTH.redirectAfterLogin(session);
+                } catch (error) {
+                    showError(error.message);
+                    submit.disabled = false;
+                    submit.textContent = 'Ingresar';
+                }
+            });
+
+            document.getElementById('demoLogin').addEventListener('click', () => {
+                window.KIRU_AUTH.redirectAfterLogin(window.KIRU_AUTH.demoLogin());
+            });
+        });
+    </script>
+</body>
+</html>

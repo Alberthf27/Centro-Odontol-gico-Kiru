@@ -11,10 +11,11 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/agendar-cita.css?v=3">
+    <script src="js/auth.js?v=2" defer></script>
     <script src="js/api.js" defer></script>
     <script src="js/agendar-cita.js?v=3" defer></script>
 </head>
-<body class="dash-body">
+<body class="dash-body" data-requires-role="CLIENTE">
     <div class="dash-shell">
         <aside class="dash-sidebar">
             <a href="mis-citas.html" class="logo logo--on-dark">
@@ -33,6 +34,9 @@
                     <span>Mis citas</span>
                 </a>
             </nav>
+            <button type="button" class="dash-logout" data-action="logout">
+                <span>Salir</span>
+            </button>
         </aside>
 
         <div class="dash-main-wrap">

@@ -1,23 +1,32 @@
 /* Listar, cancelar y reprogramar citas del cliente autenticado. */
-const view = { estado: '', citas: [], citaSeleccionadaId: null };
+const view = { estado: '', buscar: '', citas: [], citaSeleccionadaId: null };
 
 document.addEventListener('DOMContentLoaded', async () => {
     const statusFilter = document.getElementById('statusFilter');
+    const searchTerm = document.getElementById('searchTerm');
     const applyStatusFilter = () => {
         view.estado = statusFilter.value;
+        view.buscar = searchTerm.value.trim().toLowerCase();
         renderList();
     };
 
     document.getElementById('searchCitas').addEventListener('click', applyStatusFilter);
     statusFilter.addEventListener('change', applyStatusFilter);
+    searchTerm.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') applyStatusFilter();
+    });
     document.getElementById('clearFilters').addEventListener('click', () => {
         view.estado = '';
+        view.buscar = '';
         statusFilter.value = '';
+        searchTerm.value = '';
         renderList();
     });
     document.getElementById('rescheduleSelected').addEventListener('click', () => {
         const cita = getCitaSeleccionada();
-        if (cita) openRescheduleModal(cita);
+        if (cita) {
+            window.location.href = `reprogramar-cita.html?cita=${encodeURIComponent(cita.nroCita)}`;
+        }
     });
     document.getElementById('cancelSelected').addEventListener('click', () => {
         const cita = getCitaSeleccionada();
@@ -43,6 +52,7 @@ async function loadCitas() {
 function renderList() {
     const appointments = view.citas
         .filter((appointment) => !view.estado || appointment.estado === view.estado)
+        .filter((appointment) => matchesSearch(appointment, view.buscar))
         .sort((left, right) => `${left.fecha}${left.horaInicio}`.localeCompare(`${right.fecha}${right.horaInicio}`));
     const list = document.getElementById('citasList');
     const empty = document.getElementById('emptyCitas');
@@ -60,6 +70,23 @@ function renderList() {
         });
     });
     updateSelectedActions();
+}
+
+function matchesSearch(appointment, term) {
+    if (!term) return true;
+    const tipo = appointment.tratamiento
+        ? `${appointment.tratamiento} ${appointment.sesion || ''}`
+        : 'consulta';
+    const searchable = [
+        appointment.nroCita,
+        codigoVisibleCita(appointment.nroCita),
+        appointment.fecha,
+        formatTableDate(appointment.fecha),
+        tipo,
+        appointment.nombreOdontologo,
+        statusLabel(appointment.estado),
+    ].join(' ').toLowerCase();
+    return searchable.includes(term);
 }
 
 function renderRow(appointment) {
@@ -122,61 +149,6 @@ function openCancelModal(appointment) {
     });
 }
 
-function openRescheduleModal(appointment) {
-    if (!tieneAnticipacionMinima(appointment)) {
-        openModal('No se puede reprogramar', 'La reprogramación exige al menos 24 horas de anticipación.', '<button type="button" class="btn-primary" id="modalClose">Entendido</button>');
-        document.getElementById('modalClose').addEventListener('click', closeModal);
-        return;
-    }
-    const minDate = tomorrowIso();
-    openModal(
-        'Reprogramar cita',
-        `<label class="date-field"><span>Nueva fecha</span><input type="date" id="rescheduleDate" min="${minDate}" value="${appointment.fecha < minDate ? minDate : appointment.fecha}"></label><div class="slot-grid" id="rescheduleSlots"></div><p class="modal-note">La franja anterior será liberada al confirmar el cambio.</p>`,
-        '<button type="button" class="btn-ghost" id="modalClose">Volver</button><button type="button" class="btn-primary" id="confirmReschedule" disabled>Confirmar cambio</button>'
-    );
-
-    const date = document.getElementById('rescheduleDate');
-    const slots = document.getElementById('rescheduleSlots');
-    const confirm = document.getElementById('confirmReschedule');
-    let idFranjaNueva = null;
-    const renderSlots = async () => {
-        idFranjaNueva = null;
-        confirm.disabled = true;
-        slots.innerHTML = '<p class="empty-slots">Consultando franjas…</p>';
-        try {
-            const franjas = await KIRU_API.disponibilidades(appointment.idOdontologo, date.value);
-            const disponibles = franjas.filter((franja) => franja.disponible);
-            slots.innerHTML = disponibles.length
-                ? disponibles.map((franja) => `<button type="button" class="slot-btn" data-franja="${escapeHtml(franja.idFranja)}">${formatTimeDisplay(franja.horaInicio)} - ${formatTimeDisplay(franja.horaFin)}</button>`).join('')
-                : '<p class="empty-slots">No hay franjas disponibles ese día.</p>';
-            slots.querySelectorAll('[data-franja]').forEach((button) => button.addEventListener('click', () => {
-                slots.querySelectorAll('[data-franja]').forEach((item) => item.classList.remove('is-selected'));
-                button.classList.add('is-selected');
-                idFranjaNueva = button.dataset.franja;
-                confirm.disabled = false;
-            }));
-        } catch (error) {
-            slots.innerHTML = `<p class="empty-slots">${escapeHtml(error.message)}</p>`;
-        }
-    };
-    date.addEventListener('change', renderSlots);
-    renderSlots();
-    document.getElementById('modalClose').addEventListener('click', closeModal);
-    confirm.addEventListener('click', async () => {
-        if (!idFranjaNueva) return;
-        confirm.disabled = true;
-        confirm.textContent = 'Guardando…';
-        try {
-            await KIRU_API.reprogramarCita(appointment.nroCita, idFranjaNueva);
-            closeModal();
-            await loadCitas();
-            showToast('Cita reprogramada correctamente.');
-        } catch (error) {
-            showModalError(error.message);
-        }
-    });
-}
-
 function openModal(title, content, actions) {
     document.getElementById('modalBox').innerHTML = `<h3 class="modal-title">${title}</h3><p class="modal-subtext">${content}</p><div class="modal-actions">${actions}</div>`;
     document.getElementById('modalOverlay').hidden = false;
@@ -233,12 +205,6 @@ function showToast(message) {
     toast.textContent = message;
     toast.classList.add('is-visible');
     setTimeout(() => toast.classList.remove('is-visible'), 3000);
-}
-
-function tomorrowIso() {
-    const date = new Date();
-    date.setDate(date.getDate() + 1);
-    return date.toISOString().slice(0, 10);
 }
 
 function timeShort(time) { return String(time || '').slice(0, 5); }

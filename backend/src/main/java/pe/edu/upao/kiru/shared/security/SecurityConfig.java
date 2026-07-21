@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers(
-                            "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"
+                            "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/api/auth/config"
                     ).permitAll();
                     authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                     if (demoEnabled) {

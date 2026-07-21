@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reprogramar cita médica · KIRU</title>
+    <meta name="description" content="Selecciona una nueva fecha, odontólogo y franja horaria para tu cita.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/agendar-cita.css?v=3">
+    <link rel="stylesheet" href="css/reprogramar-cita.css?v=2">
+    <script src="js/auth.js?v=2" defer></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/reprogramar-cita.js?v=1" defer></script>
+</head>
+<body class="dash-body reprogram-page" data-requires-role="CLIENTE">
+    <div class="dash-shell">
+        <aside class="dash-sidebar">
+            <a href="mis-citas.html" class="logo logo--on-dark">
+                <span class="logo-mark" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" width="22" height="22" fill="none"><path d="M16 4c-3.6 0-6.4 1.7-8.4 1.7-1.7 0-2.6-.9-2.6-.9S4 6.7 4 10.4c0 4.6 1.6 9 2.9 12.6.9 2.5 1.7 4.6 3.2 4.6 1.9 0 2-4.3 2.9-7.4.4-1.4 1-2.5 2-2.5s1.6 1.1 2 2.5c.9 3.1 1 7.4 2.9 7.4 1.5 0 2.3-2.1 3.2-4.6C24.4 19.4 26 15 26 10.4c0-3.7-1-4.6-1-4.6s-.9.9-2.6.9C20.4 5.7 19.6 4 16 4z" fill="currentColor"/></svg>
+                </span>
+                <span class="logo-text">KIRU</span>
+            </a>
+            <nav class="dash-nav" aria-label="Navegación principal">
+                <a href="agendar-cita.html" class="dash-nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3.5v3M16 3.5v3"/></svg>
+                    <span>Registrar cita médica</span>
+                </a>
+                <a href="mis-citas.html" class="dash-nav-item is-active">
+                    <svg class="nav-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4h9l3 3v13a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1z"/><path d="M9 10h6M9 13.5h6M9 17h3.5"/></svg>
+                    <span>Mis citas</span>
+                </a>
+            </nav>
+            <button type="button" class="dash-logout" data-action="logout">
+                <span>Salir</span>
+            </button>
+        </aside>
+
+        <div class="dash-main-wrap">
+            <header class="dash-topbar">
+                <div>
+                    <h1 class="dash-title">Reprogramar cita médica</h1>
+                </div>
+                <div class="dash-topbar-actions">
+                    <a href="mis-citas.html" class="btn-ghost">Volver a mis citas</a>
+                </div>
+            </header>
+
+            <main class="reprogram-wrap">
+                <section class="card reprogram-card" aria-labelledby="reprogramTitle">
+                    <div id="reprogramError" class="reprogram-feedback reprogram-feedback--error" role="alert" hidden></div>
+                    <div id="reprogramContent" hidden>
+                        <div class="reprogram-top">
+                            <div class="reprogram-left-column">
+                                <button type="button" class="btn-ghost reprogram-cancel" id="cancelReprogram">Cancelar</button>
+                                <section class="mini-calendar" aria-label="Calendario de nueva fecha">
+                                    <div class="mini-calendar-header">
+                                        <button type="button" class="mini-calendar-nav" id="calPrev" aria-label="Mes anterior">‹</button>
+                                        <span id="calMonthLabel">—</span>
+                                        <button type="button" class="mini-calendar-nav" id="calNext" aria-label="Mes siguiente">›</button>
+                                    </div>
+                                    <div class="mini-calendar-weekdays"><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span><span>Do</span></div>
+                                    <div class="mini-calendar-grid" id="calGrid"></div>
+                                </section>
+                            </div>
+
+                            <section class="current-appointment-panel" aria-labelledby="currentAppointmentTitle">
+                                <h2 class="panel-title" id="currentAppointmentTitle">Cita actual</h2>
+                                <p class="panel-subtext">Se conservará la cita hasta confirmar el nuevo horario.</p>
+                                <div class="appointment-data-grid">
+                                    <div><span>N.° cita</span><strong id="currentId">—</strong></div>
+                                    <div><span>Cliente</span><strong id="currentClient">—</strong></div>
+                                    <div><span>Tipo</span><strong id="currentType">—</strong></div>
+                                    <div><span>Odontólogo</span><strong id="currentDentist">—</strong></div>
+                                    <div><span>Fecha actual</span><strong id="currentDate">—</strong></div>
+                                    <div><span>Hora actual</span><strong id="currentTime">—</strong></div>
+                                </div>
+                                <p class="reprogram-note" id="deadlineNote">La reprogramación exige al menos 24 horas de anticipación.</p>
+                            </section>
+
+                            <section class="new-selection-panel" aria-labelledby="newSelectionTitle">
+                                <h2 class="panel-title" id="newSelectionTitle">Nueva selección</h2>
+                                <p class="panel-subtext">Elige el odontólogo y una franja disponible.</p>
+                                <label class="selection-field">Odontólogo
+                                    <select id="odontologistSelect" aria-label="Odontólogo">
+                                        <option value="">Seleccionar odontólogo</option>
+                                    </select>
+                                </label>
+                                <div class="new-selection-summary">
+                                    <div><span>Nueva fecha</span><strong id="newDate">—</strong></div>
+                                    <div><span>Nueva hora</span><strong id="newTime">Selecciona una franja</strong></div>
+                                    <div><span>Nuevo odontólogo</span><strong id="newDentist">—</strong></div>
+                                </div>
+                                <button type="button" class="btn-primary reprogram-confirm" id="confirmReprogram" disabled>Confirmar cambio</button>
+                            </section>
+                        </div>
+
+                        <section class="availability-panel reprogram-availability" aria-labelledby="availabilityTitle">
+                            <div class="availability-heading">
+                                <div><h2 class="week-title" id="availabilityTitle">Disponibilidad semanal</h2><p class="week-range" id="weekRangeLabel"></p></div>
+                                <p class="week-legend"><span class="legend-dot legend-dot--free"></span>Disponible <span class="legend-dot legend-dot--busy"></span>Ocupado <span class="legend-dot legend-dot--closed"></span>Cerrado</p>
+                            </div>
+                            <div class="week-table-wrap">
+                                <table class="week-table" id="weekTable">
+                                    <thead><tr id="weekTableHead"></tr></thead>
+                                    <tbody id="weekTableBody"></tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+                    <div id="reprogramLoading" class="reprogram-loading">Cargando la cita seleccionada…</div>
+                </section>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
