@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cliente/css/styles.css">
     <link rel="stylesheet" href="css/login.css?v=2">
-    <script src="cliente/js/auth.js?v=2" defer></script>
+    <script src="cliente/js/auth.js?v=4" defer></script>
 </head>
 <body class="login-body">
     <main class="login-shell">
@@ -32,8 +32,9 @@
             </form>
 
             <div class="login-divider"><span>o</span></div>
-            <button type="button" class="btn-ghost login-demo" id="demoLogin">Continuar en modo demostración</button>
-            <p class="login-note">El rol se asigna en Supabase Auth. No se elige desde la pantalla.</p>
+            <button type="button" class="btn-secondary login-demo" id="demoLogin">Continuar en modo demostración · Cliente</button>
+            <button type="button" class="btn-secondary login-demo" id="demoLoginRecepcion">Continuar en modo demostración · Recepción</button>
+            <p class="login-note">Con Supabase Auth configurado, el rol se asigna en la cuenta. En modo demostración eliges el rol aquí.</p>
         </section>
     </main>
     <script>
@@ -65,7 +66,10 @@
             });
 
             document.getElementById('demoLogin').addEventListener('click', () => {
-                window.KIRU_AUTH.redirectAfterLogin(window.KIRU_AUTH.demoLogin());
+                window.KIRU_AUTH.redirectAfterLogin(window.KIRU_AUTH.demoLogin('CLIENTE'));
+            });
+            document.getElementById('demoLoginRecepcion').addEventListener('click', () => {
+                window.KIRU_AUTH.redirectAfterLogin(window.KIRU_AUTH.demoLogin('RECEPCIONISTA'));
             });
         });
     </script>

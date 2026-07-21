@@ -114,6 +114,11 @@
 
 .login-demo {
     justify-content: center;
+    cursor: pointer;
+}
+
+.login-demo + .login-demo {
+    margin-top: 10px;
 }
 
 .login-feedback {

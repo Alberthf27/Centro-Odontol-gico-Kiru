@@ -22,9 +22,14 @@
         return normalized === 'RECEPTIONIST' ? 'RECEPCIONISTA' : normalized || 'CLIENTE';
     }
 
+    function isModulePath() {
+        return window.location.pathname.includes('/cliente/')
+            || window.location.pathname.includes('/recepcionista/');
+    }
+
     function redirectToLogin() {
         const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-        const loginPath = window.location.pathname.includes('/cliente/') ? '../login.html' : 'login.html';
+        const loginPath = isModulePath() ? '../login.html' : 'login.html';
         const login = new URL(loginPath, window.location.href);
         login.searchParams.set('return', returnTo);
         window.location.replace(login.href);
@@ -89,10 +94,16 @@
         return saveSession(body, backendSession);
     }
 
-    function demoLogin() {
+    function demoLogin(role = 'CLIENTE') {
         sessionStorage.removeItem(ACCESS_TOKEN_KEY);
         sessionStorage.removeItem(REFRESH_TOKEN_KEY);
-        const session = { userId: null, email: 'demo@kiru.local', role: 'CLIENTE', demo: true };
+        const normalizedRole = normalizeRole(role);
+        const session = {
+            userId: null,
+            email: normalizedRole === 'RECEPCIONISTA' ? 'recepcion@kiru.local' : 'demo@kiru.local',
+            role: normalizedRole,
+            demo: true,
+        };
         sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
         return session;
     }
@@ -101,7 +112,7 @@
         sessionStorage.removeItem(ACCESS_TOKEN_KEY);
         sessionStorage.removeItem(REFRESH_TOKEN_KEY);
         sessionStorage.removeItem(SESSION_KEY);
-        const loginPath = window.location.pathname.includes('/cliente/') ? '../login.html' : 'login.html';
+        const loginPath = isModulePath() ? '../login.html' : 'login.html';
         window.location.replace(loginPath);
     }
 
@@ -112,9 +123,7 @@
             return false;
         }
         if (expectedRole && normalizeRole(session.role) !== normalizeRole(expectedRole)) {
-            const deniedPath = window.location.pathname.includes('/cliente/')
-                ? '../acceso-denegado.html'
-                : 'acceso-denegado.html';
+            const deniedPath = isModulePath() ? '../acceso-denegado.html' : 'acceso-denegado.html';
             window.location.replace(`${deniedPath}?rol=${encodeURIComponent(session.role)}`);
             return false;
         }

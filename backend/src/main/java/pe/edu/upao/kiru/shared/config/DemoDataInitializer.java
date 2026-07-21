@@ -36,10 +36,126 @@ public class DemoDataInitializer implements ApplicationRunner {
     @Transactional
     public void run(ApplicationArguments args) {
         insertarOrganizacion();
+        insertarRecepcionista();
         insertarClienteYTratamientos();
+        insertarClientesPresenciales();
         insertarPlanConSesiones();
         insertarFranjas();
+        insertarFranjasDeHoy();
+        insertarCitasDeHoy();
         LOGGER.info("Datos de demostración de reservas preparados.");
+    }
+
+    private void insertarRecepcionista() {
+        jdbcTemplate.update("""
+                insert into public.cargo (id_cargo, nombre, descripcion, estado)
+                values (-9002, 'Recepcionista', 'Monitoreo y gestión de citas en recepción', true)
+                on conflict (id_cargo) do update set estado = true
+                """);
+        insertarCuenta(-9103, "demo.recepcionista", "recepcionista@demo.kiru");
+        jdbcTemplate.update("""
+                insert into public.empleado (
+                    id_empleado, id_cuenta, id_cargo, dni, nombres, apellidos,
+                    celular, direccion, fecha_nacimiento, estado
+                ) values (-9203, -9103, -9002, '70100003', 'María', 'Torres Vega',
+                          '999100003', 'Trujillo', date '1994-03-10', true)
+                on conflict (id_empleado) do update
+                set nombres = excluded.nombres, apellidos = excluded.apellidos, estado = true
+                """);
+    }
+
+    private void insertarClientesPresenciales() {
+        insertarClientePresencial(-9402, "70654321", "Luis Alberto", "Paredes León", "1995-08-20", "988222333");
+        insertarClientePresencial(-9403, "70987654", "María Fernanda", "Quispe Ramos", "1988-11-02", "977333444");
+    }
+
+    private void insertarClientePresencial(
+            int idCliente,
+            String dni,
+            String nombres,
+            String apellidos,
+            String fechaNacimiento,
+            String celular
+    ) {
+        // Clientes registrados en recepción: sin cuenta web (auth_user_id nulo).
+        jdbcTemplate.update("""
+                insert into public.cliente (
+                    id_cliente, dni, nombres, apellidos, fecha_nacimiento,
+                    celular, domicilio, estado, auth_user_id
+                ) values (?, ?, ?, ?, ?, ?, 'Trujillo', true, null)
+                on conflict (id_cliente) do nothing
+                """, idCliente, dni, nombres, apellidos, LocalDate.parse(fechaNacimiento), celular);
+    }
+
+    /** Franjas del día actual para que el monitor de recepción siempre tenga agenda. */
+    private void insertarFranjasDeHoy() {
+        LocalDate hoy = LocalDate.now();
+        int base = -(1_150_000 + (hoy.getYear() % 100) * 40_000 + hoy.getDayOfYear() * 100);
+        int id = base;
+        for (int odontologo : new int[]{-9301, -9302}) {
+            for (LocalTime inicio : new LocalTime[]{
+                    LocalTime.of(8, 0), LocalTime.of(9, 0), LocalTime.of(10, 0),
+                    LocalTime.of(11, 0), LocalTime.of(14, 0), LocalTime.of(15, 0), LocalTime.of(16, 0)
+            }) {
+                jdbcTemplate.update("""
+                        insert into public.franja_horaria (
+                            id_franja, id_odontologo, fecha, hora_inicio, hora_fin, disponible
+                        ) values (?, ?, current_date, ?, ?, true)
+                        on conflict (id_franja) do nothing
+                        """, id--, odontologo, inicio, inicio.plusHours(1));
+            }
+        }
+    }
+
+    /** Citas del día actual (una por cliente de prueba) para poblar el monitor de recepción. */
+    private void insertarCitasDeHoy() {
+        String sufijo = LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+        insertarCitaDeHoy(1, sufijo, -9401, -9301, null, LocalTime.of(8, 0), "50.00");
+        insertarCitaDeHoy(2, sufijo, -9402, -9302, null, LocalTime.of(10, 0), "50.00");
+        insertarCitaDeHoy(3, sufijo, -9403, -9301, -9501, LocalTime.of(15, 0), "85.00");
+    }
+
+    private void insertarCitaDeHoy(
+            int correlativo,
+            String sufijo,
+            int idCliente,
+            int idOdontologo,
+            Integer idTratamiento,
+            LocalTime horaInicio,
+            String monto
+    ) {
+        String nroPedido = "PED-DEMO-" + sufijo + "-" + correlativo;
+        String nroCita = "CITA-DEMO-" + sufijo + "-" + correlativo;
+        jdbcTemplate.update("""
+                insert into public.pedido_reserva (
+                    id_cliente, nro_pedido, fecha_creacion, monto_total, estado_pago
+                )
+                select ?, ?, now(), cast(? as numeric), cast('PENDIENTE' as pedido_reserva_estado)
+                where not exists (select 1 from public.pedido_reserva where nro_pedido = ?)
+                """, idCliente, nroPedido, monto, nroPedido);
+        jdbcTemplate.update("""
+                insert into public.cita (
+                    id_pedido, id_cliente, id_odontologo, id_tratamiento, nro_cita,
+                    fecha_programada, hora_inicio, hora_fin, estado,
+                    asistencia_cliente, asistencia_odontologo
+                )
+                select p.id_pedido, ?, ?, ?, ?, current_date, ?, ?,
+                       cast('PENDIENTE' as estado_cita_enum), false, false
+                from public.pedido_reserva p
+                where p.nro_pedido = ?
+                  and not exists (select 1 from public.cita c where c.nro_cita = ?)
+                """, idCliente, idOdontologo, idTratamiento, nroCita,
+                horaInicio, horaInicio.plusHours(1), nroPedido, nroCita);
+        jdbcTemplate.update("""
+                update public.franja_horaria f
+                set disponible = false, id_cita = c.id_cita
+                from public.cita c
+                where c.nro_cita = ?
+                  and f.id_odontologo = c.id_odontologo
+                  and f.fecha = c.fecha_programada
+                  and f.hora_inicio = c.hora_inicio
+                  and f.id_cita is null
+                """, nroCita);
     }
 
     private void insertarOrganizacion() {
