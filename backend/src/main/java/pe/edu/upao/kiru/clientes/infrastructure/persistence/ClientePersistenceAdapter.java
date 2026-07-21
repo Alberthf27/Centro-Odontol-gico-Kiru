@@ -26,6 +26,11 @@ class ClientePersistenceAdapter implements ClienteRepository {
     }
 
     @Override
+    public Optional<Cliente> findByNombreCompleto(String termino) {
+        return repository.findFirstByNombreCompleto(termino).map(this::toDomain);
+    }
+
+    @Override
     public Optional<Cliente> findById(String idCliente) {
         try {
             return repository.findById(Integer.valueOf(idCliente)).map(this::toDomain);

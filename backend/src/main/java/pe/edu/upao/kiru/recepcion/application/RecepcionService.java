@@ -16,7 +16,7 @@ import pe.edu.upao.kiru.servicios.domain.PlanTratamiento;
  */
 public interface RecepcionService {
 
-    Cliente buscarClientePorDni(String dni);
+    Cliente buscarCliente(String termino);
 
     Cliente registrarClientePresencial(RegistrarClienteCommand command);
 

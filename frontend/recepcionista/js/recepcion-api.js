@@ -50,7 +50,7 @@
     }
 
     window.KIRU_RECEPCION_API = Object.freeze({
-        buscarCliente: (dni) => request(`/api/recepcion/clientes/buscar?dni=${encodeURIComponent(dni)}`),
+        buscarCliente: (termino) => request(`/api/recepcion/clientes/buscar?termino=${encodeURIComponent(termino)}`),
         registrarCliente: (cliente) => request('/api/recepcion/clientes', {
             method: 'POST', body: JSON.stringify(cliente),
         }),

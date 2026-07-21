@@ -9,6 +9,8 @@ public interface ClienteRepository {
 
     Optional<Cliente> findByDni(String dni);
 
+    Optional<Cliente> findByNombreCompleto(String termino);
+
     Optional<Cliente> findById(String idCliente);
 
     Optional<Cliente> findByAuthUserId(String authUserId);

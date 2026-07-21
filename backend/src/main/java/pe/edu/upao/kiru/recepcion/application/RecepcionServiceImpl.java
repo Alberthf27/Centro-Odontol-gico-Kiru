@@ -75,11 +75,15 @@ public class RecepcionServiceImpl implements RecepcionService {
 
     @Override
     @Transactional(readOnly = true)
-    public Cliente buscarClientePorDni(String dni) {
-        if (dni == null || !dni.matches("\\d{8}")) {
-            throw new BusinessRuleException("El DNI debe tener 8 dígitos. Corrija el DNI ingresado.");
+    public Cliente buscarCliente(String termino) {
+        String valor = termino == null ? "" : termino.trim();
+        if (valor.isBlank()) {
+            throw new BusinessRuleException("Ingrese un DNI o nombre para buscar al cliente.");
         }
-        return clienteRepository.findByDni(dni)
+        var cliente = valor.matches("\\d{8}")
+                ? clienteRepository.findByDni(valor)
+                : clienteRepository.findByNombreCompleto(valor);
+        return cliente
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente no encontrado"));
     }
 

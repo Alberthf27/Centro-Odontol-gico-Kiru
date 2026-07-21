@@ -1,5 +1,5 @@
 /* CU "Monitorear citas" — Recepcionista.
-   Flujo: citas del día por defecto, búsqueda de cliente por DNI y acciones
+   Flujo: citas del día por defecto, búsqueda de cliente por DNI o nombre y acciones
    (nueva cita, asistencia, reprogramar, cancelar) según el estado de la cita. */
 const view = {
     fecha: null,
@@ -113,7 +113,10 @@ function renderTabla() {
     list.querySelectorAll('[data-action="select"]').forEach((button) => {
         button.addEventListener('click', () => {
             const id = button.closest('tr').dataset.id;
+            const cita = view.citas.find((item) => item.nroCita === id);
             view.citaSeleccionadaId = view.citaSeleccionadaId === id ? null : id;
+            view.cliente = view.citaSeleccionadaId && cita ? clienteDesdeCita(cita) : null;
+            pintarCliente(view.cliente);
             renderTabla();
         });
     });
@@ -152,17 +155,20 @@ function mostrarVacio(mensaje) {
     empty.hidden = false;
 }
 
-/* ---- Flujo básico: buscar cliente por DNI ---- */
+/* ---- Flujo básico: buscar cliente por DNI o nombre ---- */
 async function buscarCliente() {
-    const dni = document.getElementById('dniInput').value.trim();
-    // Flujo alterno 5.1: validación de formato del DNI.
-    if (!/^\d{8}$/.test(dni)) {
-        showDniError('El DNI debe tener 8 dígitos. Corrija el DNI ingresado.');
+    const termino = document.getElementById('dniInput').value.trim();
+    if (!termino) {
+        showDniError('Ingrese un DNI o nombre para buscar al cliente.');
+        return;
+    }
+    if (/^\d+$/.test(termino) && !/^\d{8}$/.test(termino)) {
+        showDniError('Si busca por DNI, debe ingresar 8 dígitos.');
         return;
     }
     showDniError('');
     try {
-        const cliente = await KIRU_RECEPCION_API.buscarCliente(dni);
+        const cliente = await KIRU_RECEPCION_API.buscarCliente(termino);
         view.cliente = cliente;
         view.modo = 'cliente';
         pintarCliente(cliente);
@@ -184,6 +190,15 @@ function pintarCliente(cliente) {
     document.getElementById('clienteNombres').value = cliente?.nombres || '';
     document.getElementById('clienteApellidos').value = cliente?.apellidos || '';
     document.getElementById('clienteCelular').value = cliente?.celular || '';
+}
+
+function clienteDesdeCita(cita) {
+    return {
+        idCliente: cita.idCliente,
+        dni: cita.dniCliente,
+        nombres: cita.nombresCliente,
+        apellidos: cita.apellidosCliente,
+    };
 }
 
 function showDniError(mensaje) {

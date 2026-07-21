@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitorear citas · KIRU Recepción</title>
-    <meta name="description" content="Monitorea las citas del día, busca clientes por DNI y gestiona citas desde recepción.">
+    <meta name="description" content="Monitorea las citas del día, busca clientes por DNI o nombre y gestiona citas desde recepción.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -56,7 +56,7 @@
                 </div>
             </header>
 
-            <!-- Estructura prevista en el prototipo: búsqueda por DNI, datos del
+            <!-- Estructura prevista en el prototipo: búsqueda por DNI o nombre, datos del
                  cliente y acciones de recepción sobre la cita seleccionada. -->
             <div class="monitor-panel">
                 <section class="card buscar-cliente-card" aria-labelledby="buscarClienteTitle">
@@ -65,9 +65,9 @@
                     </div>
                     <div class="buscar-cliente-grid">
                         <div class="buscar-col">
-                            <label class="filter-label" for="dniInput">Ingresar DNI</label>
+                            <label class="filter-label" for="dniInput">Buscar por DNI o nombre</label>
                             <div class="dni-row">
-                                <input type="text" id="dniInput" inputmode="numeric" maxlength="8" placeholder="xxxx xxx" autocomplete="off">
+                                <input type="text" id="dniInput" inputmode="search" placeholder="DNI o nombre completo" autocomplete="off">
                                 <button type="button" class="btn-primary btn-ghost--sm" id="searchClient">Buscar</button>
                             </div>
                             <p class="field-error" id="dniError" hidden></p>

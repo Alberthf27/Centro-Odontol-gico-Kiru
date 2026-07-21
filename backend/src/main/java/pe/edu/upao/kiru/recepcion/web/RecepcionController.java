@@ -38,8 +38,8 @@ public class RecepcionController {
     }
 
     @GetMapping("/clientes/buscar")
-    public ClienteResponse buscarCliente(@RequestParam String dni) {
-        return ClienteResponse.from(recepcionService.buscarClientePorDni(dni));
+    public ClienteResponse buscarCliente(@RequestParam String termino) {
+        return ClienteResponse.from(recepcionService.buscarCliente(termino));
     }
 
     @PostMapping("/clientes")
