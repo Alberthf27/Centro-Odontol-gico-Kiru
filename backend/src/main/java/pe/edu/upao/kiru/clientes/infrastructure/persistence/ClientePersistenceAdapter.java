@@ -21,6 +21,20 @@ class ClientePersistenceAdapter implements ClienteRepository {
     }
 
     @Override
+    public Optional<Cliente> findByDni(String dni) {
+        return repository.findByDni(dni).map(this::toDomain);
+    }
+
+    @Override
+    public Optional<Cliente> findById(String idCliente) {
+        try {
+            return repository.findById(Integer.valueOf(idCliente)).map(this::toDomain);
+        } catch (NumberFormatException exception) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public Optional<Cliente> findByAuthUserId(String authUserId) {
         try {
             return repository.findByAuthUserId(UUID.fromString(authUserId)).map(this::toDomain);
@@ -39,6 +53,20 @@ class ClientePersistenceAdapter implements ClienteRepository {
                 cliente.getCelular(),
                 cliente.getDomicilio(),
                 UUID.fromString(authUserId)
+        ));
+        return toDomain(saved);
+    }
+
+    @Override
+    public Cliente savePresencial(Cliente cliente) {
+        ClienteJpaEntity saved = repository.save(new ClienteJpaEntity(
+                cliente.getDni(),
+                cliente.getNombres(),
+                cliente.getApellidos(),
+                cliente.getFechaNacimiento(),
+                cliente.getCelular(),
+                cliente.getDomicilio(),
+                null
         ));
         return toDomain(saved);
     }

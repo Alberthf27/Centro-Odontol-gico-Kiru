@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 interface ClienteJpaSpringRepository extends JpaRepository<ClienteJpaEntity, Integer> {
     boolean existsByDni(String dni);
+    Optional<ClienteJpaEntity> findByDni(String dni);
     Optional<ClienteJpaEntity> findByAuthUserId(UUID authUserId);
 }

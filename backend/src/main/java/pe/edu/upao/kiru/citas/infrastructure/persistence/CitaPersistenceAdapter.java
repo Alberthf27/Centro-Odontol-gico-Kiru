@@ -1,10 +1,12 @@
 package pe.edu.upao.kiru.citas.infrastructure.persistence;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import pe.edu.upao.kiru.citas.application.port.CitaRepository;
 import pe.edu.upao.kiru.citas.domain.Cita;
+import pe.edu.upao.kiru.clientes.application.port.ClienteRepository;
 import pe.edu.upao.kiru.clientes.domain.Cliente;
 import pe.edu.upao.kiru.disponibilidades.application.port.FranjaHorariaRepository;
 import pe.edu.upao.kiru.disponibilidades.domain.FranjaHoraria;
@@ -21,6 +23,7 @@ import pe.edu.upao.kiru.servicios.infrastructure.persistence.SesionJpaSpringRepo
 class CitaPersistenceAdapter implements CitaRepository {
 
     private final CitaJpaSpringRepository repository;
+    private final ClienteRepository clienteRepository;
     private final OdontologoRepository odontologoRepository;
     private final TratamientoRepository tratamientoRepository;
     private final FranjaHorariaRepository franjaHorariaRepository;
@@ -29,6 +32,7 @@ class CitaPersistenceAdapter implements CitaRepository {
 
     CitaPersistenceAdapter(
             CitaJpaSpringRepository repository,
+            ClienteRepository clienteRepository,
             OdontologoRepository odontologoRepository,
             TratamientoRepository tratamientoRepository,
             FranjaHorariaRepository franjaHorariaRepository,
@@ -36,6 +40,7 @@ class CitaPersistenceAdapter implements CitaRepository {
             SesionJpaSpringRepository sesionRepository
     ) {
         this.repository = repository;
+        this.clienteRepository = clienteRepository;
         this.odontologoRepository = odontologoRepository;
         this.tratamientoRepository = tratamientoRepository;
         this.franjaHorariaRepository = franjaHorariaRepository;
@@ -75,10 +80,23 @@ class CitaPersistenceAdapter implements CitaRepository {
                 .stream().map(this::toDomain).toList();
     }
 
+    @Override
+    public List<Cita> findByFecha(LocalDate fecha) {
+        return repository.findByFechaProgramadaOrderByHoraInicio(fecha)
+                .stream().map(this::toDomain).toList();
+    }
+
+    @Override
+    public List<Cita> findTodas() {
+        return repository.findAllByOrderByFechaProgramadaAscHoraInicioAsc()
+                .stream().map(this::toDomain).toList();
+    }
+
     private Cita toDomain(CitaJpaEntity entity) {
-        Cliente cliente = Cliente.reconstituir(
-                entity.getIdCliente().toString(), null, null, null, null, null, null, true
-        );
+        Cliente cliente = clienteRepository.findById(entity.getIdCliente().toString())
+                .orElseGet(() -> Cliente.reconstituir(
+                        entity.getIdCliente().toString(), null, null, null, null, null, null, true
+                ));
         Odontologo odontologo = odontologoRepository.findById(entity.getIdOdontologo().toString())
                 .orElseGet(() -> Odontologo.reconstituir(entity.getIdOdontologo().toString(), null));
         Tratamiento tratamiento = entity.getIdTratamiento() == null ? null

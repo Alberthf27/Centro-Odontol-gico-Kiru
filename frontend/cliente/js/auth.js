@@ -38,7 +38,7 @@
     function redirectAfterLogin(session) {
         const returnTo = new URLSearchParams(window.location.search).get('return');
         if (session.role === 'RECEPCIONISTA') {
-            window.location.replace('acceso-denegado.html?rol=RECEPCIONISTA');
+            window.location.replace('recepcionista/monitorear-citas.html');
             return;
         }
         const target = returnTo && returnTo.startsWith('/')
