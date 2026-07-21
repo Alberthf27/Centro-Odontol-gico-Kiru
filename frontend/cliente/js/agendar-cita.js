@@ -249,9 +249,15 @@ async function renderWeekTable() {
     const requestId = ++availabilityRequest;
     tableBody.innerHTML = '<tr><td colspan="8" class="availability-empty">Consultando disponibilidad…</td></tr>';
     try {
-        const responses = await Promise.all(weekDays.map((day) =>
-            KIRU_API.disponibilidades(state.odontologistId, toISODate(day))
-        ));
+        const today = toISODate(todayInClinic());
+        const responses = await Promise.all(weekDays.map((day) => {
+            const date = toISODate(day);
+            // La semana puede comenzar antes de hoy. Esos días se muestran
+            // vacíos, pero no se consultan porque el backend los rechaza.
+            return date < today
+                ? Promise.resolve([])
+                : KIRU_API.disponibilidades(state.odontologistId, date);
+        }));
         if (requestId !== availabilityRequest) return;
         renderAvailabilityRows(weekDays, responses);
     } catch (error) {
